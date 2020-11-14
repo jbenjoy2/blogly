@@ -1,0 +1,27 @@
+{% extends 'users/base.html' %}
+{% block title  %}{{post.title}}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="container py-3">
+        <h1>{{post.title}}</h1>
+        <p>{{post.content}}</p>
+        <p><i>By {{post.user.full_name}}</i></p>
+
+        <form>
+            <button class="btn btn-outline-primary btn-sm"
+                    formaction="/users/{{post.user.id}}"
+                    formmethod="GET">Back</button>
+            <button class="btn btn-primary btn-sm"
+                    formaction="/posts/{{ post.id }}/edit"
+                    formmethod="GET">Edit
+            </button>
+            <button class="btn btn-danger btn-sm"
+                    formaction="/posts/{{ post.id }}/delete"
+                    formmethod="POST">Delete
+            </button>
+    </div>
+
+   
+</div>
+{% endblock %}
