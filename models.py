@@ -29,6 +29,9 @@ class User(db.Model):
         """render full firstname lastname" representation of user"""
         return f"{self.first_name} {self.last_name}"
 
+    post = db.relationship('Post', backref='user',
+                           cascade='all, delete-orphan')
+
 
 class Post(db.Model):
     __tablename__ = "posts"
@@ -39,5 +42,3 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-
-    user = db.relationship('User', backref='posts')
