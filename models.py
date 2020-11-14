@@ -29,8 +29,8 @@ class User(db.Model):
         """render full firstname lastname" representation of user"""
         return f"{self.first_name} {self.last_name}"
 
-    post = db.relationship('Post', backref='user',
-                           cascade='all, delete-orphan')
+    posts = db.relationship('Post', backref='user',
+                            cascade='all, delete-orphan')
 
 
 class Post(db.Model):
@@ -42,3 +42,10 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.datetime.now)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @property
+    def friendly_date(self):
+        """render datetime as a user-friendly representation"""
+        # %a=three-letter day, %b=three-letter month, %-d day without leading zero, %Y full year, %-I 12hour without leading zero, %M minutes, %p am/pm
+
+        return self.created_at.strftime("%a %b %-d %Y, %-I:%M %p")

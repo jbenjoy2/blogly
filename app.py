@@ -17,8 +17,10 @@ db.create_all()
 
 @app.route('/')
 def show_root():
-    """root which redirects to users"""
-    return redirect('/users')
+    """root , shows 5 most recent posts"""
+    posts = Post.query.order_by(Post.created_at.desc()).limit(5).all()
+
+    return render_template('index.html', posts=posts)
 
 
 @app.route('/users')
