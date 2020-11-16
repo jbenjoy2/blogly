@@ -9,9 +9,7 @@
         <p><i>By {{post.user.full_name}}</i></p>
 
         <form>
-            <button class="btn btn-outline-primary btn-sm"
-                    formaction="/users/{{post.user.id}}"
-                    formmethod="GET">Back</button>
+            <a class = "btn btn-sm btn-outline-secondary" href="#" onclick="history.go(-1)">Back</a>
             <button class="btn btn-primary btn-sm"
                     formaction="/posts/{{ post.id }}/edit"
                     formmethod="GET">Edit
