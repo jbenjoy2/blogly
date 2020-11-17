@@ -6,7 +6,7 @@
     <div class="container py-3">
         <h1>{{post.title}}</h1>
         <p>{{post.content}}</p>
-        <p><i>By {{post.user.full_name}}</i></p>
+        <p><i>By <a href="/users/{{post.user_id}}">{{post.user.full_name}}</a></i></p>
 
         <form>
             <a class = "btn btn-sm btn-outline-secondary" href="#" onclick="history.go(-1)">Back</a>

@@ -72,3 +72,14 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertNotIn(self.user.full_name, html)
+
+    def test_show_homepage(self):
+        """test to make sure recent posts show up on home page, and that home page is active"""
+        with app.test_client() as client:
+            resp = client.get('/')
+            html = resp.get_data(as_text=True)
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('<h1 class="display-1">Recent Posts</h1>', html)
+            self.assertIn('<li class="nav-item home active">', html)
+
+    def test_show_post_details(self):
