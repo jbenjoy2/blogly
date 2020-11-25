@@ -110,7 +110,7 @@ class UserViewsTestCase(TestCase):
             self.assertEqual(resp.status_code, 200)
             self.assertIn(f'<h1>{self.post.title}</h1>', html)
             self.assertIn(
-                f'<i>By <a href="/users/{self.post.user_id}">{self.post.user.full_name}</a></i>', html)
+                f'<i>By <a href="/users/{self.post.user_id}">{self.post.user.full_name}', html)
 
     def test_add_new_post(self):
         """test to make sure a form to add new post gets submitted properly"""

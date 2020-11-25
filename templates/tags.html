@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Tags{% endblock %}
+
+{%block content%}
+<div class="container-fluid p-3 px-5">
+    <h1 class="display-1">All Tags</h1>
+    <div class="container mr-auto">
+        {%if tags %}
+        <ul class="list-group">
+            {% for tag in tags %}
+            <a href="/tags/{{tag.id}}" class="list-group-item list-group-item-danger text-dark mt-2" style="max-width: 40%;"><span class="badge badge-primary badge-pill">{{tag.name}}</span></a>
+            {%endfor%}
+        </ul>
+        {%else%}
+        <h3 class="alert alert-warning text-danger" style="width:45%">
+            There are currently no tags in use
+        </h3>
+        {%endif%}
+        
+    </div>
+    <p>
+        <a class="btn btn-info text-light mt-3 ml-auto" href="/tags/new">Add Tag</a>
+    </p>
+{%endblock%}

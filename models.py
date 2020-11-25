@@ -29,8 +29,8 @@ class User(db.Model):
         """render full firstname lastname" representation of user"""
         return f"{self.first_name} {self.last_name}"
 
-    posts = db.relationship('Post', backref='user',
-                            cascade='all, delete-orphan')
+    posts = db.relationship("Post", backref="user",
+                            cascade="all, delete-orphan")
 
 
 class Post(db.Model):
@@ -49,3 +49,26 @@ class Post(db.Model):
         # %a=three-letter day, %b=three-letter month, %-d day without leading zero, %Y full year, %-I 12hour without leading zero, %M minutes, %p am/pm
 
         return self.created_at.strftime("%a %b %-d %Y, %-I:%M %p")
+
+    def __repr__(self):
+        return f"<Post {self.id}: {self.title}>"
+
+
+class Tag(db.Model):
+    __tablename__ = 'tags'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.Text, nullable=False, unique=True)
+
+    posts = db.relationship('Post', secondary='posts_tags', backref='tags')
+
+    def __repr__(self):
+        return f"<Tag {self.id}: {self.name}>"
+
+
+class PostTag(db.Model):
+    __tablename__ = 'posts_tags'
+
+    post_id = db.Column(db.Integer, db.ForeignKey(
+        'posts.id'), primary_key=True)
+    tag_id = db.Column(db.Integer, db.ForeignKey('tags.id'), primary_key=True)

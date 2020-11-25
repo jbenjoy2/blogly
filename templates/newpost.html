@@ -19,6 +19,23 @@
                     </textarea>
                 </div>
             </div>
+            
+            <h4>Add A Tag</h4>
+            <div class="form-check">
+                {% for tag in tags %}
+                <div>
+                  <input class="form-check-input"
+                         type="checkbox"
+                         value="{{ tag.id }}"
+                         id="tag_{{ tag.id }}"
+                         name="tags">
+                  <label class="form-check-label" for="tag_{{ tag.id }}">
+                    <span class="badge badge-pill badge-primary">{{ tag.name }}</span>
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+
             <div class="form-group row">
                 <div class="ml-auto mr-3">
                     <a href="/users/{{user.id}}" class="btn btn-info">Cancel</a>

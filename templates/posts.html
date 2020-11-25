@@ -8,9 +8,12 @@
         {%for post in posts %}
         <div class="col-12 col-md-6 col-lg-3 p-3 p-lg-1 m-3">
             <div class="card">
-                <div class="card-body">
+                <div class="card-body pb-0">
                     <div class="card-title"><a href="/posts/{{post.id}}">{{post.title}}</a></div>
                     <div class="card-text">{{post.content}}</div>
+                    <div class="card-text pt-3">
+                        <p><b>Tags:</b>{%if post.tags%}{%for tag in post.tags%} <a href="/tags/{{tag.id}}"><span class="badge badge-primary">{{tag.name}}</span></a>{%endfor%}{%else%} None{%endif%}</p>
+                    </div>
                 </div>
                 <div class="card-footer text-muted text-center">By <a href="/users/{{post.user_id}}">{{post.user.full_name}}</a> on {{post.friendly_date}}</div>
             </div>
