@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import app
-from models import db, User, Post
+from models import db, User, Post, Tag, PostTag
 
 
 # use test database and dont clutter tests with sql
@@ -24,6 +24,7 @@ class UserViewsTestCase(TestCase):
         """add sample pet."""
         Post.query.delete()
         User.query.delete()
+        Tag.query.delete()
 
         user = User(first_name="Test", last_name="User",
                     image_url='https://www.freeiconspng.com/uploads/person-icon-user-person-man-icon-4.png')
@@ -42,6 +43,13 @@ class UserViewsTestCase(TestCase):
 
         self.post_id = post.id
         self.post = post
+
+        tag = Tag(name='TestTag')
+        db.session.add(tag)
+        db.session.commit()
+
+        self.tag_id = tag.id
+        self.tag = tag
 
     def tearDown(self):
         """Clean up fouled session"""
@@ -73,7 +81,7 @@ class UserViewsTestCase(TestCase):
             html = resp.get_data(as_text=True)
 
             self.assertEqual(resp.status_code, 200)
-            self.assertIn('>Test User2</a></li>', html)
+            self.assertIn('<h1>Test User2</h1>', html)
 
     def test_delete_user(self):
         with app.test_client() as client:
@@ -126,6 +134,7 @@ class UserViewsTestCase(TestCase):
                 f'Testpost2</a>', html)
 
     def test_delete_post(self):
+        """test to make sure deleting post occurs as expected"""
         with app.test_client() as client:
             resp = client.post(
                 f"/posts/{self.post_id}/delete", follow_redirects=True)
@@ -133,3 +142,65 @@ class UserViewsTestCase(TestCase):
 
             self.assertEqual(resp.status_code, 200)
             self.assertNotIn(self.post.title, html)
+
+    def test_show_tags(self):
+        """test rendering of all tags page"""
+        with app.test_client() as client:
+            resp = client.get("/tags")
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('<h1 class="display-1">All Tags</h1>', html)
+
+    def test_show_tag_details(self):
+        """test rendering of tag details page"""
+        with app.test_client() as client:
+            resp = client.get(f'/tags/{self.tag_id}')
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(f'<h1>{self.tag.name}</h1>', html)
+
+    def test_show_add_tag(self):
+        """test rendering of form to add a new tag, including post checkboxes"""
+        with app.test_client() as client:
+            resp = client.get('/tags/new')
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(
+                '<input type="text" class="form-control" id="name" name="name" placeholder="Enter a name for the tag" required>', html)
+            self.assertIn(
+                f'<label class="form-check-label" for="post_{ self.post_id }">{self.post.title}</label>', html)
+
+    def test_add_tag(self):
+        """test submission of tag addition"""
+        with app.test_client() as client:
+            d = {"name": "tag2"}
+            resp = client.post(f"/tags/new", data=d, follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(
+                '<span class="badge badge-primary badge-pill">tag2</span>', html)
+
+    def test_show_edit_tag(self):
+        """test rendering of form to edit a tag"""
+        with app.test_client() as client:
+            resp = client.get(f'/tags/{self.tag_id}/edit')
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn(
+                f'<input type="text" class="form-control" id="name" name="name" value="{self.tag.name}" required>', html)
+
+    def test_delete_tag(self):
+        """test deletion of tag, and make sure alert renders"""
+        with app.test_client() as client:
+            resp = client.post(
+                f'tags/{self.tag_id}/delete', follow_redirects=True)
+            html = resp.get_data(as_text=True)
+
+            self.assertEqual(resp.status_code, 200)
+            self.assertIn('There are currently no tags in use', html)
+            self.assertNotIn(self.tag.name, html)
